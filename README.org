@@ -5,7 +5,7 @@ Often when a PDF document is generated using LaTeX, the special accented UTF-8 c
 This wrapper translates these combinations using regular expressions and a lookup dictionary.
 * Usage
 Pipe the =STDOUT= of =pdftotext= to STDIN of this script and redirect =STDOUT= of this script to some file or pipe.
-Examplein BASH: =pdftotext file.pdf - | pdftotext_with_accents > file.txt=
+Example in [[http://www.gnu.org/software/bash/][BASH]] (or any other POSIX SH shell): =pdftotext file.pdf - | pdftotext_with_accents > file.txt=
 * License
 GPL-3+ and a sincere request that you use 
 #+BEGIN_SRC latex
