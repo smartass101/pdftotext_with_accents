@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+r"""I created this script because people that can't be bothered to use in their Czech LaTeX code
+\usepackage[T1]{fontenc}
+really piss me off.
+
+Use it by piping STDOUT from pdftotext to STDIN of this script, it will write to STDOUT the transformed text:
+pdftotext path/to/file.pdf - | pdftotext_with_accents > destination_file.txt
+
+It is not 100% reliable as pdftotext sometimes does "ťt" -> "t t" which cannot be so easily detected
+"""
+
+
+import re
+import sys
+
+caron_characters = "eěrřtťsšdďzžcčnň"
+caron_characters += caron_characters.upper()
+acute_characters = "eéuúıíoóaáyý"          #note the dotless i
+acute_characters += acute_characters.upper()
+ring_characters = "uů"
+ring_characters += ring_characters.upper()
+
+lookup_table = { '´': acute_characters,
+                 'ˇ': caron_characters,
+                 '˚': ring_characters,
+                 '’': caron_characters,   #for d and t
+                 }
+
+match_regexp_before_char = re.compile(r"(\s){0,2}(?P<accent>[´ˇ˚])(\s)?(?P<character>\w)", flags=re.UNICODE)
+match_regexp_after_char = re.compile(r"(?P<character>\w)(?P<accent>’)", flags=re.UNICODE) #for ď, ť
+
+#match_regexp = re.compile(r"(\s){0,2}(?P<accent>[´ˇ˚])(\s)?(?P<character>\w)", flags=re.UNICODE)
+
+def convert_to_accented_character(match):
+    """Use this function as the *repl* argument to :method:`match_regexp.sub`"""
+    chars = match.groupdict()
+    character = chars["character"]
+    accent = chars["accent"]
+    character_set = lookup_table[accent]
+    return character_set[character_set.find(character) + 1]
+
+
+if __name__ == "__main__":
+    stream = sys.stdin.readlines()
+    stream = "".join(stream)              #retain \n to make it readable
+    stream = re.sub(r"u(\s)?´(\s)?", "ú", stream)   #first get rid of this problem
+    stream = match_regexp_after_char.sub(convert_to_accented_character, stream)
+    stream = match_regexp_before_char.sub(convert_to_accented_character, stream)
+    print(stream)
