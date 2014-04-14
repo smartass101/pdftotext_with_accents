@@ -27,7 +27,7 @@ lookup_table = { '´': acute_characters,
                  '’': caron_characters,   #for d and t
                  }
 
-match_regexp_before_char = re.compile(r"(\s){0,2}(?P<accent>[´ˇ˚])(\s)?(?P<character>\w)", flags=re.UNICODE)
+match_regexp_before_char = re.compile(r"(\n){0,2}(?P<accent>[´ˇ˚])(\s)?(?P<character>\w)", flags=re.UNICODE)
 match_regexp_after_char = re.compile(r"(?P<character>\w)(?P<accent>’)", flags=re.UNICODE) #for ď, ť
 
 #match_regexp = re.compile(r"(\s){0,2}(?P<accent>[´ˇ˚])(\s)?(?P<character>\w)", flags=re.UNICODE)
